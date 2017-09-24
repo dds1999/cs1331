@@ -44,6 +44,7 @@ public class PgnReader {
             String move = getNextMove(gameIn, turn);
             readMove(move);
             turn++;
+            printBoard();
         }
         String finalString = "";
         for (int i = 0; i < board.length; i++) {
@@ -62,8 +63,8 @@ public class PgnReader {
             }
             finalString += "/";
         }
-
-        return finalString;
+        finalString = finalString.trim();
+        return finalString.substring(0, finalString.length() - 1);
     }
     public static String[][] createBoard() {
         String[][] newBoard = new String[8][8];
@@ -98,9 +99,15 @@ public class PgnReader {
         String[] playerMoves = move.split("\\s");
         for (int i = 0; i < playerMoves.length; i++) {
             String curr = playerMoves[i];
-            if (curr.contains("K") || curr.contains("k")) {
+            int xIndex = curr.indexOf("x");
+            boolean hasX = xIndex > -1;
+            curr = hasX ? (curr.substring(0, xIndex)
+                + curr.substring(xIndex + 1)) : curr;
+            if (curr.contains("=")) {
+                pawnPromotion(curr, i, hasX);
+            } else if (curr.contains("K")) {
                 info = basicInfoForNonPawns(curr, i);
-                kingMove(info);
+                kingMove(info, false);
             } else if (curr.contains("Q")) {
                 info = basicInfoForNonPawns(curr, i);
                 queenMove(info);
@@ -113,10 +120,18 @@ public class PgnReader {
             } else if (curr.contains("R")) {
                 info = basicInfoForNonPawns(curr, i);
                 rookMove(info);
-            } else if (curr.contains("x")) {
-                pawnCapture(curr, i);
+            } else if (curr.contains("O-O")) {
+                castleKingSide(i);
+            } else if (curr.contains("O-O-O")) {
+                castleQueenSide(i);
+            } else if (curr.trim().length() > 2) {
+                // pawn capture
+                curr = curr.substring(1);
+                info = basicInfoForPawns(curr, i);
+                pawnCapture(info);
             } else {
-                pawnMove(curr, i);
+                info = basicInfoForPawns(curr, i);
+                pawnMove(info);
             }
         }
     }
@@ -165,7 +180,7 @@ public class PgnReader {
         result[2] = whoseTurn;
         return result;
     }
-    public static void pawnMove(String currIn, int whoseTurn) {
+    public static int[] basicInfoForPawns(String currIn, int whoseTurn) {
         String curr = currIn.trim();
         int col;
         int tempRow = Integer.parseInt(curr.substring(1, 2));
@@ -204,55 +219,51 @@ public class PgnReader {
         } else {
             row = 7;
         }
+        int[] result = {row, col, whoseTurn};
+        return result;
+    }
+    public static void pawnMove(int[] arrIn) {
+        int row = arrIn[0];
+        int col = arrIn[1];
+        int whoseTurn = arrIn[2];
         if (whoseTurn == 0) {
-            if (row != 0) {
-                board[row][col] = "P";
-            } else {
-                board[row][col] = "K";
-            }
+            board[row][col] = "P";
             if (board[row + 1][col].equals("P")) {
                 board[row + 1][col] = "";
-            } else if (board[row + 2][col].equals("P") && turn == 1) {
+            } else if (board[row + 2][col].equals("P")) { //&& turn == 1) {
                 board[row + 2][col] = "";
             }
         } else {
-            if (row != 7) {
-                board[row][col] = "p";
-            } else {
-                board[row][col] = "k";
-            }
+            board[row][col] = "p";
             if (board[row - 1][col].equals("p")) {
                 board[row - 1][col] = "";
-            } else if (board[row - 2][col].equals("p") && turn == 1) {
+            } else if (board[row - 2][col].equals("p")) { // && turn == 1) {
                 board[row - 2][col] = "";
             }
         }
-        System.out.println(currIn + " = " + row + " , " + col + " , " + turn);
+        //System.out.println(currIn + " = " + row + " , " + col + " , " + turn);
     }
-    public static void pawnCapture(String currIn, int whoseTurn) {
-        /*if (curr.contains("p")) {
-            if (row != 7) {
-                board[row][col] = "p";
-            } else {
-                board[row][col] = "k";
+    public static void pawnCapture(int[] arrIn) {
+        int row = arrIn[0];
+        int col = arrIn[1];
+        int whoseTurn = arrIn[2];
+        //System.out.println("I am going to capture at " + row + ", " + col);
+        board[row][col] = (whoseTurn == 0) ? "P" : "p";
+        if (whoseTurn == 0 && row + 1 < board.length) {
+            if (col - 1 >= 0 && board[row + 1][col - 1].equals("P")) {
+                board[row + 1][col - 1] = "";
+            } else if (col + 1 < board[row + 1].length
+                && board[row + 1][col + 1].equals("P")) {
+                board[row + 1][col + 1] = "";
             }
-            if (board[row - 1][col].equals("p")) {
-                board[row - 1][col] = "";
-            } else if (board[row - 2][col].equals("p")) {
-                board[row - 2][col] = "";
+        } else if (row - 1 >= 0) {
+            if (col - 1 >= 0 && board[row - 1][col - 1].equals("p")) {
+                board[row - 1][col - 1] = "";
+            } else if (col + 1 < board[row - 1].length
+                && board[row - 1][col + 1].equals("p")) {
+                board[row - 1][col + 1] = "";
             }
-        } else if (curr.contains("P")) {
-            if (row != 0) {
-                board[row][col] = "p";
-            } else {
-                board[row][col] = "k";
-            }
-            if (board[row + 1][col].equals("P")) {
-                board[row + 1][col] = "";
-            } else if (board[row + 2][col].equals("P")) {
-                board[row - 2][col] = "";
-            }
-        }*/
+        }
     }
     public static void rookMove(int[] infoArr) {
         boolean removed = false;
@@ -305,13 +316,52 @@ public class PgnReader {
                     removed = true;
                 }
             }
+            open = true;
         }
     }
     public static void knightMove(int[] infoIn) {
+        boolean removed = false;
+        int row = infoIn[0];
+        int col = infoIn[1];
+        String currPlayer =  (infoIn[2] == 0) ? "N" : "n";
+        board[row][col] = currPlayer;
+        // check front two left [from white perspective]
+        if (row - 2 >= 0 && col - 1 >= 0
+            && board[row - 2][col - 1].equals(currPlayer)) {
+            board[row - 2][col - 1] = "";
+        } else if (row - 2 >= 0 && col + 1 < board[row].length
+            && board[row - 2][col + 1].equals(currPlayer)) {
+            // check front two right
+            board[row - 2][col + 1] = "";
+        } else if (row + 2 < board.length && col - 1 >= 0
+            && board[row + 2][col - 1].equals(currPlayer)) {
+              // check back two left
+            board[row + 2][col - 1] = "";
+        } else if (row + 2 < board.length && col + 1 < board[row].length
+            && board[row + 2][col + 1].equals(currPlayer)) {
+            // check back two right
+            board[row + 2][col + 1] = "";
+        } else if (row - 1 >= 0 && col - 2 >= 0
+            && board[row - 1][col - 2].equals(currPlayer)) {
+             // check left two front
+            board[row - 1][col - 2] = "";
+        } else if (row + 1 < board.length && col - 2 >= 0
+            && board[row + 1][col - 2].equals(currPlayer)) {
+            // check left two back
+            board[row + 1][col - 2] = "";
+        } else if (row - 1 >= 0 && col + 2 < board[row].length
+            && board[row - 1][col + 2].equals(currPlayer)) {
+            // check right two front
+            board[row - 1][col + 2] = "";
+        } else if (row + 1 < board.length && col + 2 < board[row].length
+            && board[row + 1][col + 2].equals(currPlayer)) {
+            // check right two back
+            board[row + 1][col + 2] = "";
+        }
     }
+    // no need to disambiguate bishops
     public static void bishopMove(int[] infoIn) {
         boolean removed = false;
-        boolean open = true;
         int row = infoIn[0];
         int col = infoIn[1];
         String currPlayer =  (infoIn[2] == 0) ? "B" : "b";
@@ -335,7 +385,8 @@ public class PgnReader {
         }
         // go up right
         if (!removed) {
-            for (int i = row, j = col; i >= 0 && j < board[i].length; i--, j++) {
+            for (int i = row, j = col; i >= 0
+                && j < board[i].length; i--, j++) {
                 if (board[i][j].equals(currPlayer) && row != i && col != j) {
                     board[i][j] = "";
                     removed = true;
@@ -353,8 +404,161 @@ public class PgnReader {
         }
     }
     public static void queenMove(int[] infoIn) {
+        boolean removed = false;
+        int row = infoIn[0];
+        int col = infoIn[1];
+        String currPlayer =  (infoIn[2] == 0) ? "Q" : "q";
+        board[row][col] = currPlayer;
+        // check for diagnoal queen
+        // go down right
+        for (int i = row, j = col; i < board.length
+            && j < board[i].length; i++, j++) {
+            if (board[i][j].equals(currPlayer) && row != i && col != j) {
+                board[i][j] = "";
+                removed = true;
+            }
+        }
+        // go down left
+        if (!removed) {
+            for (int i = row, j = col; i < board.length && j >= 0; i++, j--) {
+                if (board[i][j].equals(currPlayer) && row != i && col != j) {
+                    board[i][j] = "";
+                    removed = true;
+                }
+            }
+        }
+        // go up right
+        if (!removed) {
+            for (int i = row, j = col; i >= 0
+                && j < board[i].length; i--, j++) {
+                if (board[i][j].equals(currPlayer) && row != i && col != j) {
+                    board[i][j] = "";
+                    removed = true;
+                }
+            }
+        }
+        // go up left
+        if (!removed) {
+            for (int i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+                if (board[i][j].equals(currPlayer) && row != i && col != j) {
+                    board[i][j] = "";
+                    removed = true;
+                }
+            }
+        }
+        // check for straight moves like rook
+        if (!removed) {
+            for (int i = 0; i < board.length; i++) {
+                boolean found = board[i][col].equals(currPlayer);
+                if (found && row != i) {
+                    board[i][col] = "";
+                    removed = true;
+                }
+            }
+            for (int j = 0; j < board[row].length; j++) {
+                boolean found = board[row][j].equals(currPlayer);
+                if (!removed && found && col != j) {
+                    board[row][j] = "";
+                    removed = true;
+                }
+            }
+        }
     }
-    public static void kingMove(int[] infoIn) {
+    public static void kingMove(int[] infoIn, boolean castling) {
+        boolean removed = false;
+        int row = infoIn[0];
+        int col = infoIn[1];
+        String currPlayer =  (infoIn[2] == 0) ? "K" : "k";
+        board[row][col] = currPlayer;
+        // basic move. If they provide no invalid moves no need to worry about
+        // stopping king from putting itself in check
+        if (!castling) {
+            if (row + 1 < board.length) {
+                if (col + 1 < board[row].length
+                    && board[row + 1][col + 1].equals(currPlayer)) {
+                    board[row + 1][col + 1] = "";
+                    removed = true;
+                } else if (board[row + 1][col].equals(currPlayer)) {
+                    board[row + 1][col] = "";
+                    removed = true;
+                } else if (col - 1 >= 0
+                    && board[row + 1][col - 1].equals(currPlayer)) {
+                    board[row + 1][col - 1] = "";
+                    removed = true;
+                }
+            } else if (!removed && row - 1 >= 0) {
+                if (col + 1 < board[row].length
+                    && board[row - 1][col + 1].equals(currPlayer)) {
+                    board[row + 1][col + 1] = "";
+                    removed = true;
+                } else if (board[row + 1][col].equals(currPlayer)) {
+                    board[row - 1][col] = "";
+                    removed = true;
+                } else if (col - 1 >= 0
+                    && board[row + 1][col - 1].equals(currPlayer)) {
+                    board[row - 1][col - 1] = "";
+                    removed = true;
+                }
+            } else if (!removed) {
+                if (col + 1 < board[row].length
+                    && board[row][col + 1].equals(currPlayer)) {
+                    board[row][col + 1] = "";
+                    removed = true;
+                } else if (col >= 0 && board[row][col - 1].equals(currPlayer)) {
+                    board[row][col - 1] = "";
+                    removed = true;
+                }
+            }
+        } else if (board[row][col - 2].equals(currPlayer)) {
+            board[row][col - 2] = "";
+        } else {
+            board[row][col + 2] = "";
+        }
+    }
+    public static void castleKingSide(int whoseTurn) {
+        if (whoseTurn == 0) {
+            int[] rookInfo = {7, 5, 0};
+            rookMove(rookInfo);
+            int[] kingInfo = {7, 6, 0};
+            kingMove(kingInfo, true);
+        } else {
+            int[] rookInfo = {0, 5, 1};
+            rookMove(rookInfo);
+            int[] kingInfo = {0, 6, 1};
+            kingMove(kingInfo, true);
+        }
+    }
+    //test a queen side castling
+    public static void castleQueenSide(int whoseTurn) {
+        if (whoseTurn == 0) {
+            int[] rookInfo = {7, 3, 0};
+            rookMove(rookInfo);
+            int[] kingInfo = {7, 2, 0};
+            kingMove(kingInfo, true);
+        } else {
+            int[] rookInfo = {0, 3, 1};
+            rookMove(rookInfo);
+            int[] kingInfo = {0, 2, 1};
+            kingMove(kingInfo, true);
+        }
+    }
+    public static void pawnPromotion(String move, int whoseTurn,
+        boolean capture) {
+        move = move.trim();
+        int equalIndex = move.indexOf("=");
+        String placement = move.substring(equalIndex - 2, equalIndex);
+        int[] info = basicInfoForPawns(placement, whoseTurn);
+        if (capture) {
+            pawnCapture(info);
+        } else {
+            pawnMove(info);
+        }
+        String newPiece = move.substring(equalIndex + 1);
+        newPiece = (newPiece.length() > 1) ? newPiece.substring(0 , 1)
+                : newPiece;
+        int row = info[0];
+        int col = info[1];
+        board[row][col] = (whoseTurn == 0) ? newPiece : newPiece.toLowerCase();
     }
     /**
      * Reads the file named by path and returns its content as a String.
@@ -378,16 +582,7 @@ public class PgnReader {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        String game = fileContent(args[0]);
-        System.out.format("Event: %s%n", tagValue("Event", game));
-        System.out.format("Site: %s%n", tagValue("Site", game));
-        System.out.format("Date: %s%n", tagValue("Date", game));
-        System.out.format("Round: %s%n", tagValue("Round", game));
-        System.out.format("White: %s%n", tagValue("White", game));
-        System.out.format("Black: %s%n", tagValue("Black", game));
-        System.out.format("Result: %s%n", tagValue("Result", game));
-        System.out.printf("Final Position: %s%n", finalPosition(game));
+    public static void printBoard() {
         for (String[] arr : board) {
             for (String letter : arr) {
                 if (letter.equals("")) {
@@ -398,5 +593,18 @@ public class PgnReader {
             }
             System.out.println();
         }
+        System.out.println("______________________________________");
+    }
+    public static void main(String[] args) {
+        String game = fileContent(args[0]);
+        System.out.format("Event: %s%n", tagValue("Event", game));
+        System.out.format("Site: %s%n", tagValue("Site", game));
+        System.out.format("Date: %s%n", tagValue("Date", game));
+        System.out.format("Round: %s%n", tagValue("Round", game));
+        System.out.format("White: %s%n", tagValue("White", game));
+        System.out.format("Black: %s%n", tagValue("Black", game));
+        System.out.format("Result: %s%n", tagValue("Result", game));
+        System.out.printf("Final Position: %s%n", finalPosition(game));
+        printBoard();
     }
 }
