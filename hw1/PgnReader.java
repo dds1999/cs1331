@@ -65,7 +65,6 @@ public class PgnReader {
 
         return finalString;
     }
-
     public static String[][] createBoard() {
         String[][] newBoard = new String[8][8];
         newBoard[0] = new String[]{"r", "n", "b", "q", "k", "b", "n", "r"};
@@ -78,7 +77,6 @@ public class PgnReader {
         newBoard[7] = new String[]{"R", "N", "B", "Q", "K", "B", "N", "R"};
         return newBoard;
     }
-
     public static String getNextMove(String game, int whatTurn) {
         int start = 0;
         int end = 0;
@@ -103,16 +101,16 @@ public class PgnReader {
             if (curr.contains("K") || curr.contains("k")) {
                 info = basicInfoForNonPawns(curr, i);
                 kingMove(info);
-            } else if (curr.contains("Q") || curr.contains("q")) {
+            } else if (curr.contains("Q")) {
                 info = basicInfoForNonPawns(curr, i);
                 queenMove(info);
-            } else if (curr.contains("B") || curr.contains("b")) {
+            } else if (curr.contains("B")) {
                 info = basicInfoForNonPawns(curr, i);
                 bishopMove(info);
-            } else if (curr.contains("N") || curr.contains("n")) {
+            } else if (curr.contains("N")) {
                 info = basicInfoForNonPawns(curr, i);
                 knightMove(info);
-            } else if (curr.contains("R") || curr.contains("r")) {
+            } else if (curr.contains("R")) {
                 info = basicInfoForNonPawns(curr, i);
                 rookMove(info);
             } else if (curr.contains("x")) {
@@ -126,7 +124,8 @@ public class PgnReader {
         String curr = currIn.trim();
         int[] result = new int[3];
         int col;
-        int row = Integer.parseInt(curr.substring(2, 3)) - 1;
+        int tempRow = Integer.parseInt(curr.substring(2, 3));
+        int row;
         if (curr.contains("a")) {
             col = 0;
         } else if (curr.contains("b")) {
@@ -143,6 +142,23 @@ public class PgnReader {
             col = 6;
         } else {
             col = 7;
+        }
+        if (tempRow == 8) {
+            row = 0;
+        } else if (tempRow == 7) {
+            row = 1;
+        } else if (tempRow == 6) {
+            row = 2;
+        } else if (tempRow == 5) {
+            row = 3;
+        } else if (tempRow == 4) {
+            row = 4;
+        } else if (tempRow == 3) {
+            row = 5;
+        } else if (tempRow == 2) {
+            row = 6;
+        } else {
+            row = 7;
         }
         result[0] = row;
         result[1] = col;
@@ -152,7 +168,8 @@ public class PgnReader {
     public static void pawnMove(String currIn, int whoseTurn) {
         String curr = currIn.trim();
         int col;
-        int row = Integer.parseInt(curr.substring(1, 2)) - 1;
+        int tempRow = Integer.parseInt(curr.substring(1, 2));
+        int row;
         if (curr.contains("a")) {
             col = 0;
         } else if (curr.contains("b")) {
@@ -170,19 +187,25 @@ public class PgnReader {
         } else {
             col = 7;
         }
-        if (whoseTurn == 0) {
-            if (row != 7 || row != 0) {
-                board[row][col] = "p";
-            } else {
-                board[row][col] = "k";
-            }
-            if (board[row - 1][col].equals("p")) {
-                board[row - 1][col] = "";
-            } else if (board[row - 2][col].equals("p") && turn == 1) {
-                board[row - 2][col] = "";
-            }
+        if (tempRow == 8) {
+            row = 0;
+        } else if (tempRow == 7) {
+            row = 1;
+        } else if (tempRow == 6) {
+            row = 2;
+        } else if (tempRow == 5) {
+            row = 3;
+        } else if (tempRow == 4) {
+            row = 4;
+        } else if (tempRow == 3) {
+            row = 5;
+        } else if (tempRow == 2) {
+            row = 6;
         } else {
-            if (row != 7 || row != 0) {
+            row = 7;
+        }
+        if (whoseTurn == 0) {
+            if (row != 0) {
                 board[row][col] = "P";
             } else {
                 board[row][col] = "K";
@@ -192,9 +215,19 @@ public class PgnReader {
             } else if (board[row + 2][col].equals("P") && turn == 1) {
                 board[row + 2][col] = "";
             }
+        } else {
+            if (row != 7) {
+                board[row][col] = "p";
+            } else {
+                board[row][col] = "k";
+            }
+            if (board[row - 1][col].equals("p")) {
+                board[row - 1][col] = "";
+            } else if (board[row - 2][col].equals("p") && turn == 1) {
+                board[row - 2][col] = "";
+            }
         }
         System.out.println(currIn + " = " + row + " , " + col + " , " + turn);
-
     }
     public static void pawnCapture(String currIn, int whoseTurn) {
         /*if (curr.contains("p")) {
@@ -220,13 +253,104 @@ public class PgnReader {
                 board[row - 2][col] = "";
             }
         }*/
-
     }
-    public static void rookMove(int[] infoIn) {
+    public static void rookMove(int[] infoArr) {
+        boolean removed = false;
+        boolean open = true;
+        int row = infoArr[0];
+        int col = infoArr[1];
+        String currPlayer =  (infoArr[2] == 0) ? "R" : "r";
+        board[row][col] = currPlayer;
+        for (int i = 0; i < board.length; i++) {
+            boolean found = board[i][col].equals(currPlayer);
+            if (found && !removed && row != i) {
+                if (i < row) {
+                    for (int temp = i + 1; temp < row; temp++) {
+                        if (!board[temp][col].equals("")) {
+                            open = false;
+                        }
+                    }
+                } else {
+                    for (int temp = i - 1; temp > row; temp--) {
+                        if (!board[temp][col].equals("")) {
+                            open = false;
+                        }
+                    }
+                }
+                if (open) {
+                    board[i][col] = "";
+                    removed = true;
+                }
+            }
+        }
+        open = (removed) ? false : true;
+        for (int j = 0; j < board[row].length; j++) {
+            boolean found = board[row][j].equals(currPlayer);
+            if (col != j && found && !removed) {
+                if (j < col) {
+                    for (int temp = j + 1; temp < col; temp++) {
+                        if (!board[row][temp].equals("")) {
+                            open = false;
+                        }
+                    }
+                } else {
+                    for (int temp = j - 1; temp > col; temp--) {
+                        if (!board[row][temp].equals("")) {
+                            open = false;
+                        }
+                    }
+                }
+                if (open) {
+                    board[row][j] = "";
+                    removed = true;
+                }
+            }
+        }
     }
     public static void knightMove(int[] infoIn) {
     }
     public static void bishopMove(int[] infoIn) {
+        boolean removed = false;
+        boolean open = true;
+        int row = infoIn[0];
+        int col = infoIn[1];
+        String currPlayer =  (infoIn[2] == 0) ? "B" : "b";
+        board[row][col] = currPlayer;
+        // go down right
+        for (int i = row, j = col; i < board.length
+            && j < board[i].length; i++, j++) {
+            if (board[i][j].equals(currPlayer) && row != i && col != j) {
+                board[i][j] = "";
+                removed = true;
+            }
+        }
+        // go down left
+        if (!removed) {
+            for (int i = row, j = col; i < board.length && j >= 0; i++, j--) {
+                if (board[i][j].equals(currPlayer) && row != i && col != j) {
+                    board[i][j] = "";
+                    removed = true;
+                }
+            }
+        }
+        // go up right
+        if (!removed) {
+            for (int i = row, j = col; i >= 0 && j < board[i].length; i--, j++) {
+                if (board[i][j].equals(currPlayer) && row != i && col != j) {
+                    board[i][j] = "";
+                    removed = true;
+                }
+            }
+        }
+        // go up left
+        if (!removed) {
+            for (int i = row, j = col; i >= 0 && j >= 0; i--, j--) {
+                if (board[i][j].equals(currPlayer) && row != i && col != j) {
+                    board[i][j] = "";
+                    removed = true;
+                }
+            }
+        }
     }
     public static void queenMove(int[] infoIn) {
     }
