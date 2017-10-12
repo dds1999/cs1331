@@ -16,6 +16,7 @@ public class Rook extends Piece {
         int row = currentPosition[0];
         int col = currentPosition[1];
         int[][] possible = {
+            // I know this is super hacky but we can't use arraylist. I'm sorry
             {0, col},
             {1, col},
             {2, col},
@@ -36,8 +37,8 @@ public class Rook extends Piece {
         int nullCount = 0;
         for (int i = 0; i < possible.length; i++) {
             if (possible[i][0] < 0 || possible[i][0] > 7 || possible[i][1] < 0
-                || possible[i][1] > 7 ||
-                (possible[i][0] == row && possible[i][1] == col)) {
+                || possible[i][1] > 7
+                || (possible[i][0] == row && possible[i][1] == col)) {
                 possible[i] = null;
                 nullCount++;
             }

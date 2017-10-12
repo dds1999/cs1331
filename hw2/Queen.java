@@ -16,14 +16,8 @@ public class Queen extends Piece {
         int row = currentPosition[0];
         int col = currentPosition[1];
         int[][] possible = {
-            {row - 1, col + 1},
-            {row - 1, col},
-            {row - 1, col - 1},
-            {row + 1, col + 1},
-            {row + 1, col},
-            {row + 1, col - 1},
-            {row, col + 1},
-            {row, col - 1},
+            // I know this is super hacky but we can't use arraylist. I'm sorry
+            // like rook
             {0, col},
             {1, col},
             {2, col},
@@ -39,13 +33,42 @@ public class Queen extends Piece {
             {row, 4},
             {row, 5},
             {row, 6},
-            {row, 7}
+            {row, 7},
+            // like bishop
+            {row - 1, col - 1},
+            {row - 2, col - 2},
+            {row - 3, col - 3},
+            {row - 4, col - 4},
+            {row - 5, col - 5},
+            {row - 6, col - 6},
+            {row - 7, col - 7},
+            {row + 1, col - 1},
+            {row + 2, col - 2},
+            {row + 3, col - 3},
+            {row + 4, col - 4},
+            {row + 5, col - 5},
+            {row + 6, col - 6},
+            {row + 7, col - 7},
+            {row + 1, col + 1},
+            {row + 2, col + 2},
+            {row + 3, col + 3},
+            {row + 4, col + 4},
+            {row + 5, col + 5},
+            {row + 6, col + 6},
+            {row + 7, col + 7},
+            {row - 1, col + 1},
+            {row - 2, col + 2},
+            {row - 3, col + 3},
+            {row - 4, col + 4},
+            {row - 5, col + 5},
+            {row - 6, col + 6},
+            {row - 7, col + 7}
         };
         int nullCount = 0;
         for (int i = 0; i < possible.length; i++) {
             if (possible[i][0] < 0 || possible[i][0] > 7 || possible[i][1] < 0
-                || possible[i][1] > 7 ||
-                (possible[i][0] == row && possible[i][1] == col)) {
+                || possible[i][1] > 7
+                || (possible[i][0] == row && possible[i][1] == col)) {
                 possible[i] = null;
                 nullCount++;
             }
@@ -66,5 +89,6 @@ public class Queen extends Piece {
             char rank = (char) tempRank;
             result[i] = new Square(file, rank);
         }
-        return result;    }
+        return result;
+    }
 }
