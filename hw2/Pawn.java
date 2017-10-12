@@ -2,26 +2,29 @@ public class Pawn extends Piece {
     public Pawn(Color color) {
         super(color);
     }
+
     @Override public String algebraicName() {
         return "";
     }
+
     @Override public String fenName() {
         if (super.getColor() == Color.WHITE) {
             return "P";
         }
         return "p";
     }
+
     @Override public Square[] movesFrom(Square square) {
-                int[] currentPosition = square.getBoardIndex();
+        int[] currentPosition = square.getBoardIndex();
         int row = currentPosition[0];
         int col = currentPosition[1];
-        int[][] possible = [2][2];
-        if (super.getColor() == WHITE) {
-            possible[0][0] = [row + 1];
-            possible[1][0] = [row + 2];
+        int[][] possible =  new int[2][2];
+        if (super.getColor() == Color.WHITE) {
+            possible[0] = new int[]{row - 1, col};
+            possible[1] = new int[]{row - 2, col};
         } else  {
-            possible[0][0] = [row - 1];
-            possible[1][0] = [row - 2];
+            possible[0] = new int[]{row + 1, col};
+            possible[1] = new int[]{row + 2, col};
         }
         int nullCount = 0;
         for (int i = 0; i < possible.length; i++) {
@@ -46,7 +49,6 @@ public class Pawn extends Piece {
             tempRank = tempRank + 48;
             char rank = (char) tempRank;
             result[i] = new Square(file, rank);
-            System.out.println(result[i]);
         }
         return result;
     }

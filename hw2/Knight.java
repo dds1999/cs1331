@@ -15,17 +15,17 @@ public class Knight extends Piece {
         int[] currentPosition = square.getBoardIndex();
         int row = currentPosition[0];
         int col = currentPosition[1];
+        int nullCount = 0;
         int[][] possible = {
             {row - 2, col + 1},
             {row - 2, col - 1},
             {row + 2, col + 1},
-            {row + 2, col - 1}
+            {row + 2, col - 1},
             {row - 1, col + 2},
             {row - 1, col - 2},
             {row + 1, col + 2},
-            {row + 1, col + 2},
+            {row + 1, col + 2}
         };
-        int nullCount = 0;
         for (int i = 0; i < possible.length; i++) {
             if (possible[i][0] < 0 || possible[i][0] > 7 || possible[i][1] < 0
                 || possible[i][1] > 7) {
@@ -48,8 +48,12 @@ public class Knight extends Piece {
             tempRank = tempRank + 48;
             char rank = (char) tempRank;
             result[i] = new Square(file, rank);
-            System.out.println(result[i]);
         }
         return result;
+    }
+    public static void main(String[] args) {
+        Pawn x = new Pawn(Color.WHITE);
+        x.movesFrom(new Square("d4"));
+        System.out.println();
     }
 }

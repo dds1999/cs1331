@@ -48,7 +48,6 @@ public class King extends Piece {
             tempRank = tempRank + 48;
             char rank = (char) tempRank;
             result[i] = new Square(file, rank);
-            System.out.println(result[i]);
         }
         return result;
     }
