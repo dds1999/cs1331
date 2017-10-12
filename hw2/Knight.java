@@ -51,9 +51,4 @@ public class Knight extends Piece {
         }
         return result;
     }
-    public static void main(String[] args) {
-        Pawn x = new Pawn(Color.WHITE);
-        x.movesFrom(new Square("d4"));
-        System.out.println();
-    }
 }

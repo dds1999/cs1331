@@ -12,52 +12,52 @@ public class Rook extends Piece {
         return "r";
     }
     @Override public Square[] movesFrom(Square square) {
-        return null;
-        for (int i = 0; i < board.length; i++) {
-            boolean found = board[i][col].equals(currPlayer);
-            if (found && !removed && row != i) {
-                if (i < row) {
-                    for (int temp = i + 1; temp < row; temp++) {
-                        if (!board[temp][col].equals("")) {
-                            open = false;
-                        }
-                    }
-                } else {
-                    for (int temp = i - 1; temp > row; temp--) {
-                        if (!board[temp][col].equals("")) {
-                            open = false;
-                        }
-                    }
-                }
-                if (open) {
-                    board[i][col] = "";
-                    removed = true;
-                }
+        int[] currentPosition = square.getBoardIndex();
+        int row = currentPosition[0];
+        int col = currentPosition[1];
+        int[][] possible = {
+            {0, col},
+            {1, col},
+            {2, col},
+            {3, col},
+            {4, col},
+            {5, col},
+            {6, col},
+            {7, col},
+            {row, 0},
+            {row, 1},
+            {row, 2},
+            {row, 3},
+            {row, 4},
+            {row, 5},
+            {row, 6},
+            {row, 7}
+        };
+        int nullCount = 0;
+        for (int i = 0; i < possible.length; i++) {
+            if (possible[i][0] < 0 || possible[i][0] > 7 || possible[i][1] < 0
+                || possible[i][1] > 7 ||
+                (possible[i][0] == row && possible[i][1] == col)) {
+                possible[i] = null;
+                nullCount++;
             }
         }
-        open = (removed) ? false : true;
-        for (int j = 0; j < board[row].length; j++) {
-            boolean found = board[row][j].equals(currPlayer);
-            if (col != j && found && !removed) {
-                if (j < col) {
-                    for (int temp = j + 1; temp < col; temp++) {
-                        if (!board[row][temp].equals("")) {
-                            open = false;
-                        }
-                    }
-                } else {
-                    for (int temp = j - 1; temp > col; temp--) {
-                        if (!board[row][temp].equals("")) {
-                            open = false;
-                        }
-                    }
-                }
-                if (open) {
-                    board[row][j] = "";
-                    removed = true;
-                }
+        int[][] possibleAndValid = new int[possible.length - nullCount][2];
+        int j = 0;
+        for (int i = 0; i < possible.length; i++) {
+            if (possible[i] != null) {
+                possibleAndValid[j] = possible[i];
+                j++;
             }
-            open = true;
         }
+        Square[] result = new Square[possibleAndValid.length];
+        for (int i = 0; i < possibleAndValid.length; i++) {
+            char file = (char) (possibleAndValid[i][1] + 97);
+            int tempRank = 8 - possibleAndValid[i][0];
+            tempRank = tempRank + 48;
+            char rank = (char) tempRank;
+            result[i] = new Square(file, rank);
+        }
+        return result;
     }
 }
