@@ -1,16 +1,34 @@
+/**
+ * Represents a king chess object
+ * @author dds7
+ */
 public class King extends Piece {
+    /**
+     * Constructor for a king
+     * @param color the color of a given king
+     */
     public King(Color color) {
         super(color);
     }
+    /**
+     * @return this piece's algebraic name
+     */
     @Override public String algebraicName() {
         return "K";
     }
+    /**
+     * @return this piece's FEN name
+     */
     @Override public String fenName() {
         if (super.getColor() == Color.WHITE) {
             return "K";
         }
         return "k";
     }
+    /**
+     * @param square the starting square of this piece
+     * @return this an array of possible squares this piece could move to
+     */
     @Override public Square[] movesFrom(Square square) {
         int[] currentPosition = square.getBoardIndex();
         int row = currentPosition[0];

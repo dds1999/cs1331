@@ -1,16 +1,34 @@
+/**
+ * Represents a rook chess object
+ * @author dds7
+ */
 public class Rook extends Piece {
+    /**
+     * Constructor for a rook
+     * @param color the color of a given rook
+     */
     public Rook(Color color) {
         super(color);
     }
+    /**
+     * @return this piece's algebraic name
+     */
     @Override public String algebraicName() {
         return "R";
     }
+    /**
+     * @return this piece's FEN name
+     */
     @Override public String fenName() {
         if (super.getColor() == Color.WHITE) {
             return "R";
         }
         return "r";
     }
+    /**
+     * @param square the starting square of this piece
+     * @return this an array of possible squares this piece could move to
+     */
     @Override public Square[] movesFrom(Square square) {
         int[] currentPosition = square.getBoardIndex();
         int row = currentPosition[0];

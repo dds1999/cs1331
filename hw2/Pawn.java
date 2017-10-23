@@ -1,19 +1,34 @@
+/**
+ * Represents a pawn chess object
+ * @author dds7
+ */
 public class Pawn extends Piece {
+    /**
+     * Constructor for a pawn
+     * @param color the color of a given pawn
+     */
     public Pawn(Color color) {
         super(color);
     }
-
+    /**
+     * @return this piece's algebraic name
+     */
     @Override public String algebraicName() {
         return "";
     }
-
+    /**
+     * @return this piece's FEN name
+     */
     @Override public String fenName() {
         if (super.getColor() == Color.WHITE) {
             return "P";
         }
         return "p";
     }
-
+    /**
+     * @param square the starting square of this piece
+     * @return this an array of possible squares this piece could move to
+     */
     @Override public Square[] movesFrom(Square square) {
         int[] currentPosition = square.getBoardIndex();
         int row = currentPosition[0];

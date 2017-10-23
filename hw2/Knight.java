@@ -1,16 +1,34 @@
+/**
+ * Represents a knight chess object
+ * @author dds7
+ */
 public class Knight extends Piece {
+    /**
+     * Constructor for a knight
+     * @param color the color of a given knight
+     */
     public Knight(Color color) {
         super(color);
     }
+    /**
+     * @return this piece's algebraic name
+     */
     @Override public String algebraicName() {
         return "N";
     }
+    /**
+     * @return this piece's FEN name
+     */
     @Override public String fenName() {
         if (super.getColor() == Color.WHITE) {
             return "N";
         }
         return "n";
     }
+    /**
+     * @param square the starting square of this piece
+     * @return this an array of possible squares this piece could move to
+     */
     @Override public Square[] movesFrom(Square square) {
         int[] currentPosition = square.getBoardIndex();
         int row = currentPosition[0];
