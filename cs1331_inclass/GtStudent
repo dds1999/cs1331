@@ -1,0 +1,4 @@
+public class GtStudent implenetes Comparable<Student> {
+    private final String name;
+
+}
