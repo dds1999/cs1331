@@ -9,11 +9,11 @@ public class IntSet<E>{
             backingArray[indexPointer] = t;
             indexPointer++;
         } else {
-            this.copyOneLarger();
+            this.doubleSize();
             this.add(t);
         }
     }
-    private void copyOneLarger() {
+    private void doubleSize() {
         E[] temp = new (E[]) Object[2 * backingArray.length];
         for (int i = 0; i < backingArray.length; i++) {
             temp[i] = backingArray[i];
