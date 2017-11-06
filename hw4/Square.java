@@ -1,6 +1,7 @@
 /**
  * Represents a chess square  object
  * @author dds7
+ * @version 9.0.1
  */
 public class Square {
     private char file;

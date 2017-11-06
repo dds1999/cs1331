@@ -5,6 +5,7 @@
 * before running.
 *
 * @author dds7
+* @version 9.0.1
 */
 public class InvalidSquareException extends Exception {
     /**
