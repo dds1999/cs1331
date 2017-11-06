@@ -39,10 +39,10 @@ public class SquareSet implements Set<Square>, Iterable<Square> {
             throw new NullPointerException();
         }
         try {
-            Square copy = new Square(s.getFile(), s.getRank());
+            Square copy = new Square(s.toString());
+            Square copy2 = new Square(s.getFile(), s.getRank());
         } catch (InvalidSquareException e) {
-            System.out.println("InvalidSquareException for invalid square: "
-                + e.getMessage());
+            throw new InvalidSquareException(s.toString());
         }
         if (this.contains(s)) {
             return false;
@@ -60,7 +60,7 @@ public class SquareSet implements Set<Square>, Iterable<Square> {
     /**
      * Adds multiple given Squares to an existing set
      * @param c the Collection of given Squares to add
-     * @return the boolean value of whether the cllection was changed
+     * @return the boolean value of whether the collection was changed
      */
     @Override
     public boolean addAll(Collection<? extends Square> c)
@@ -71,17 +71,16 @@ public class SquareSet implements Set<Square>, Iterable<Square> {
             if (o == null) {
                 throw new NullPointerException();
             } else {
-                this.add(o);
-                changed = changed ? true : this.add(o);
+                copyC.add(o);
             }
         }
-        // if (!copyC.isEmpty()) {
-        //     for (Square s : copyC) {
-        //         if (this.add(s)) {
-        //             changed = this.add(s);;
-        //         }
-        //     }
-        // }
+        if (!copyC.isEmpty()) {
+            for (Square s : copyC) {
+                if (this.add(s)) {
+                    changed = true;
+                }
+            }
+        }
         return changed;
     }
 
@@ -157,13 +156,13 @@ public class SquareSet implements Set<Square>, Iterable<Square> {
         if (other == null) {
             return false;
         }
-        if (!(other instanceof SquareSet)) {
+        if (!(other instanceof Set)) {
             return false;
         }
         if (this == other) {
             return true;
         }
-        SquareSet that = (SquareSet) other;
+        Set<Object> that = (Set<Object>) other;
         if (that.size() == this.size() && that.containsAll(this)
             && this.containsAll(that)) {
             return true;
@@ -280,15 +279,9 @@ public class SquareSet implements Set<Square>, Iterable<Square> {
      * @return the boolean value of if the Set was changed by this operation
      */
     @Override
-    public boolean retainAll(Collection<?> c) {
-        boolean changed = false;
-        for (Square s : backingArray) {
-            if (!c.contains(s)) {
-                this.remove(s);
-                changed = true;
-            }
-        }
-        return changed;
+    public boolean retainAll(Collection<?> c)
+        throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -339,21 +332,30 @@ public class SquareSet implements Set<Square>, Iterable<Square> {
      * @return an array containing all the elements in this set
      */
     @Override
-    public <T> T[] toArray(T[] a) throws ArrayStoreException {
-        // if (!Square.class.isAssignableFrom(T)) {
-        //     throw new ArrayStoreException();
-        // }
-        // int len;
-        // if (a.length > indexPointer) {
-        //     len = a.length;
-        // } else {
-        //     len = indexPointer;
-        // }
-        // T[] arr = new T[len];
-        // for (int i = 0; i < indexPointer; i++) {
-        //     arr[i] = backingArray[i];
-        // }
-        // return arr;
+    public <T> T[] toArray(T[] a) {
+        try {
+            int len;
+            if (a.length >= indexPointer) {
+                len = a.length;
+                for (int i = 0; i < indexPointer; i++) {
+                    a[i] = (T) backingArray[i];
+                }
+                return (T[]) a;
+            } else {
+                len = indexPointer;
+                Object[] arr = new Square[len];
+                for (int i = 0; i < indexPointer; i++) {
+                    arr[i] = (T) backingArray[i];
+                }
+                return (T[]) arr;
+            }
+        } catch (ArrayStoreException e) {
+            throw new ArrayStoreException();
+        } catch (NullPointerException e) {
+            throw new NullPointerException();
+        } catch (Exception e) {
+            System.out.print("EXCEPTION: SOMETHING IS WRONG");
+        }
         return null;
     }
 
@@ -361,7 +363,7 @@ public class SquareSet implements Set<Square>, Iterable<Square> {
      * Doubles the size of the backing array of this set
      */
     private void doubleSize() {
-        Square[] temp = (Square[]) new Object[2 * indexPointer];
+        Square[] temp = new Square[2 * indexPointer];
         for (int i = 0; i < backingArray.length; i++) {
             temp[i] = backingArray[i];
         }

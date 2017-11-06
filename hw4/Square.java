@@ -69,8 +69,8 @@ public class Square {
 
     @Override public int hashCode() {
         int hashNum = 31;
-        hashNum += (17 * (int) this.rank);
-        hashNum += (17 * (int) this.file);
+        String name = "" + this.rank + this.file;
+        hashNum += (17 * name.hashCode());
         return hashNum;
     }
     /**
