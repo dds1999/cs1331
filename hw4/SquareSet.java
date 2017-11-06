@@ -9,22 +9,65 @@ public class SquareSet implements Set<Square> {
     private int indexPointer = 0;
 
     public SquareSet() {
-
+        backingArray = new Square[10];
     }
 
-    public SquareSet(? extends Collection<Square> c) {
-
+    public SquareSet(Collection<Square> c) {
+        this();
+        this.addAll(c);
     }
-    // NEED
+    /**
+     * Returns a boolean of if this Set contains a given element
+     * @param e the given Square to search for
+     * @return the boolean value of if the given Square is in Set
+     */
+    @Override
+    public boolean contains(Square e) {
+        if (e == null) {
+            throw new NullPointerExpection();
+        }
+        for (int i = 0; i < backingArray.length(); i++) {
+            if (backingArray[i].equals(e)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * Returns a boolean of if this Set contains a several given elements
+     * @param c the given collection of Squares to search for
+     * @return the boolean value of if all Squares are contained
+     */
+    @Override
+    public boolean containsAll(Collection<Square> c) {
+        if (e == null) {
+            throw new NullPointerExpection();
+        }
+        for (Square s : c)  {
+            boolean found = false;
+            for (int i = 0; i < backingArray.length(); i++) {
+                if (backingArray[i].equals(e)) {
+                    found = true;
+                }
+            }
+            if (found == false) {
+                return false;
+            }
+        }
+        return true;
+    }
     /**
      * Adds a given Square to an existing set
      * @param e the given Square to add
      * @return the boolean value of if the given Square was sucessfully added
      */
     @Override
-    public boolean add(Square e) {
+    public boolean add(Square e) throws InvalidSquareException {
         if (e == null) {
             throw new NullPointerExpection();
+        }
+        if (this.contains(e)) {
+            return false;
         }
         if (indexPointer < backingArray.length) {
             backingArray[indexPointer] = e;
@@ -61,7 +104,23 @@ public class SquareSet implements Set<Square> {
     public void clear() {
         backingArray = new Square[10];
     }
-
+    /**
+     * Removes a inputed element
+     * @param s the Square to be removed
+     * @return the boolean value of if the Sqaure was sucessfully removed
+     */
+    @Override public boolean remove(<? extends Square> s) {
+        for (int i = 0; i < backingArray.length; i++) {
+            if (backingArray[i].equals(s)) {
+                backingArray[i] = null;
+                for (int j = i + 1; j < backingArray.length; j++) {
+                    backingArray[i] = backingArray[j];
+                }
+                return true;
+            }
+        }
+        return false;
+    }
     // @Override public void removeAll(Collection<?> c) {
     //  for (int i = 0; i < c.size(); c++) {
     //      if (this.contains(c.get(0)) {
@@ -81,7 +140,8 @@ public class SquareSet implements Set<Square> {
         backingArray = temp;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         String result = "[";
         for (int i = 0; i < indexPointer; i++) {
             result += (backingArray[i] + ", ");
@@ -89,5 +149,44 @@ public class SquareSet implements Set<Square> {
         result = result.substring(0, result.length() - 2);
         result += "]";
         return result;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (!(other instanceof SquareSet)) {
+            return false;
+        }
+        if (this == other) {
+            return true;
+        }
+        SquareSet that = (SquareSet) other;
+        if (that.size() == this.size && that.containsAll(this)
+            && this.containsAll(that)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        for (Square s : backingArray) {
+            if (s != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean size() {
+        return this.indexPointer;
+    }
+
+    @Override
+    public Square[] toArray() {
+        return this.backingArray;
     }
 }
