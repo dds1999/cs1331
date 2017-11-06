@@ -22,7 +22,7 @@ public class TryNewThing implements Set<Square> {
      * @param e the given Square to search for
      * @return the boolean value of if the given Square is in Set
      */
-    //@Override
+    @Override
     public boolean contains(Object o) {
         return false;
     }
@@ -31,7 +31,7 @@ public class TryNewThing implements Set<Square> {
      * @param c the given collection of Squares to search for
      * @return the boolean value of if all Squares are contained
      */
-    //@Override
+    @Override
     public boolean containsAll(Collection<?> c) {
         return true;
     }
@@ -75,14 +75,14 @@ public class TryNewThing implements Set<Square> {
      * @return the boolean value of if the all the given Sqaures
      *         were sucessfully added
      */
-    //@Override
-    public boolean addAll(Collection<? extends Square> s) {
+    @Override
+    public boolean addAll(Collection<? extends Square> arr) {
         return false;
     }
     /**
      * Removes all the elemments in this set
      */
-    //@Override
+    @Override
     public void clear() {
         backingArray = new Square[10];
     }

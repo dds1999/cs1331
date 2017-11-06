@@ -22,21 +22,26 @@ public class SquareSet implements Set<Square> {
         this.addAll(c);
     }
         /**
-     * Adds a given Square to an existing set
-     * @param e the given Square to add
-     * @return the boolean value of if the given Square was sucessfully added
+     * Adds a given Object to an existing set
+     * @param o the given Object to add
+     * @return the boolean value of if the given Object was sucessfully added
      */
     //@Override
-    public boolean add(Square s) {
-        if (s == null) {
+    public boolean add(Object o) {
+        if (o == null) {
             throw new NullPointerExpection();
         }
+        if (!(o instanceof Square)) {
+            return false;
+        }
+        Square s;
         try {
-           // ????
+           s = (Square) o;
         } catch (InvalidSquareException e) {
             System.out.println("InvalidSquareException for invalid square: "
                 + e.getMessage());
-        }
+       }
+
         if (this.contains(s)) {
             return false;
         }
@@ -57,7 +62,7 @@ public class SquareSet implements Set<Square> {
      * @return the boolean value of whether the cllection was changed
      */
     //@Override
-    public boolean addAll(Collection<? extends Square> c) {
+    public boolean addAll(Collection<? extends Square> arr) {
         boolean changed = false;
         for (Square s : c) {
             if (this.add(s)) {
@@ -88,7 +93,7 @@ public class SquareSet implements Set<Square> {
         }
         Square s;
         if (o instanceof Square)  {
-            Square s = (Square) o;
+            s = (Square) o;
             for (int i = 0; i < backingArray.length; i++) {
                 if (backingArray[i].equals(s)) {
                     return true;
@@ -155,10 +160,11 @@ public class SquareSet implements Set<Square> {
     }
 
     // !! NEED HELP HERE
-    /*
+
     public Iterator<Square> iterator() {
-        return new Iterator<Square>();
-    }*/
+        return null;
+        //return new Iterator<Square>();
+    }
 
     /**
      * Removes a inputed element
