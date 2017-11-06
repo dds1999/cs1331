@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * This class outlines a Collections Set object capable of holding Squares
+ * This class outlines a SquareSet capable of holding Squares
  * @author dds7
  * @version 9.0.1
  */
