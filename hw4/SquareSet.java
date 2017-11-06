@@ -1,12 +1,14 @@
 import java.util.Collection;
-import java.
+import java.util.Iterator;
 import java.lang.NullPointerException;
 import java.util.Set;
+
 /**
  * This class outlines a Collections Set object capable of holding Squares
  * @author dds7
  * @version 9.0.1
  */
+
 public class SquareSet implements Set<Square> {
     private Square[] backingArray;
     private int indexPointer = 0;
@@ -153,9 +155,10 @@ public class SquareSet implements Set<Square> {
     }
 
     // !! NEED HELP HERE
+    /*
     public Iterator<Square> iterator() {
         return new Iterator<Square>();
-    }
+    }*/
 
     /**
      * Removes a inputed element
@@ -225,8 +228,16 @@ public class SquareSet implements Set<Square> {
     }
 
     //@Override
-    public Square[] toArray() {
+    public Object[] toArray() {
         return this.backingArray;
+    }
+
+    //@Override
+    public <T> T[] toArray(T[] a) {
+        // if (a.length > 1) {
+        //     Class t = a[0].getClass();
+        //     t.isAssignableFrom(B.class)
+        // }
     }
 
     /**
