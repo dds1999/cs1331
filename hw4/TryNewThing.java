@@ -40,33 +40,12 @@ public class TryNewThing implements Set<Square> {
      * @param e the given Square to add
      * @return the boolean value of if the given Square was sucessfully added
      */
+    // @Override
+    // public boolean add(Object o) {
+    //     return false;
+    // }
     @Override
-    public boolean add(Object o) {
-        if (o == null) {
-            throw new NullPointerExpection();
-        }
-        if (!(o instanceof Square)) {
-            return false;
-        }
-        Square s;
-        try {
-           s = (Square) o;
-        } catch (InvalidSquareException e) {
-            System.out.println("InvalidSquareException for invalid square: "
-                + e.getMessage());
-       }
-
-        if (this.contains(s)) {
-            return false;
-        }
-        if (indexPointer < backingArray.length) {
-            backingArray[indexPointer] = s;
-            indexPointer++;
-        } else {
-            this.doubleSize();
-            this.add(s);
-            return true;
-        }
+    public boolean add(Square s) {
         return false;
     }
     /**

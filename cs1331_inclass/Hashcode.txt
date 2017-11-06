@@ -1,0 +1,51 @@
+What does hashcode do?
+
+Maps value of Object to an interger.
+
+Three requirements :
+
+1. Consistency
+2. If a.equals(b) then a.hashCode() == b.hashCode()
+3. If !a.equals(b) then a.hashCode() == b.hashCode() OR a.hashCode() != b.hashCode()
+    - Because integer set is relatively smaller than set of possible Objects
+    - // known as Hash Collsion if two non equal elemnts get same hashCode(),
+         genreates a Linked List
+
+
+Therefore
+        public int hashCode() {
+            return 1;
+        }
+    is legitamate but bad
+
+Hash Table :
+    Data Strucure of buckets to hold stuff, and each bucket is an int
+    HashCode() determines which bucket it should be put into
+    Takes Constant (or Arirthmetic code)
+    Example:
+        HashCode() has buckets that corresponds to int reprepsentations of alphabet (0 == A, 1 == B, etc...)
+        I can store people such that the HashCode of each person is equal to int representation of the first letter of their first name
+
+        0 -> Abigal
+        1 -> Bianca
+        2
+        3
+        4 -> Emelia -> Ellia -> Ellen
+
+        // what if I've overridden hashCode() the bad way?
+
+        0 ->
+        1 -> Abigal, Bianca -> Emelia -> Ellia -> Ellen
+        2
+        3
+        4
+
+
+Hash code finds bucket. Equals finds the element in the bucket
+
+How do you implement HashCode() ?
+    Convert all significant fields of a class (ones that participate in evaluating value equality) to integers and add them up
+    So.. primitive types just cast to int
+         object types call their hashCode()
+
+    Yes.. there's a fancy way but we don't have to do that

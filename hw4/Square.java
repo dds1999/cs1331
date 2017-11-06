@@ -65,6 +65,13 @@ public class Square {
         Square that = (Square) other;
         return (this.rank == that.rank && this.file == that.file);
     }
+
+    @Override public int hashCode() {
+        int hashNum = 31;
+        hashNum += (17 * (int) this.rank);
+        hashNum += (17 * (int) this.file);
+        return hashNum;
+    }
     /**
      * finds an integer array containting the row and coloumn values of where
      * this square would be on an array with the dimensions of a chess board
