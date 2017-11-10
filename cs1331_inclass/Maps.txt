@@ -1,0 +1,14 @@
+Backing of a Map could be Array of Pairs where a Pair Object holds the designated generics the Map is initialized with.
+Hash code is the Array Index ?
+
+
+Put method takes a key value
+Calls hash code of Key
+Uses that value to determine which bucket to put it in (hashCode % arraySize)
+
+
+This is why retrevial time for HashMap and HashCodes is super fast
+
+int result = 17;
+result 31 * result + color.hasCode();
+return restulr;
