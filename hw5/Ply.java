@@ -1,3 +1,5 @@
+import java.util.Optional;
+
 /**
  * This class outlines a single chass play by either player
  * @author dds7
@@ -16,7 +18,7 @@ public class Ply {
      * @param to the ending Square of the piece moved
      * @param comment an optional comment describing the play
      */
-    public (Piece piece, Square from, Square to, Optional<String> comment) {
+    public Ply(Piece piece, Square from, Square to, Optional<String> comment) {
         this.piece = piece;
         this.from = from;
         this.to = to;

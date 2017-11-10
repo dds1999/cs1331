@@ -9,8 +9,8 @@ public class Move {
 
     /**
      * Constructs a Move object with a play for the white and black players
-     * @param whitePLy the play of the white-piece player
-     * @param blackPLy the play of the black-piece player
+     * @param whitePly the play of the white-piece player
+     * @param blackPly the play of the black-piece player
      */
     public Move(Ply whitePly, Ply blackPly) {
         this.whitePly = whitePly;
