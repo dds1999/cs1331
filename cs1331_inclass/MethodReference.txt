@@ -1,0 +1,3 @@
+object::instanceMethod // x-> onject.instanceMethodOf
+Class::staticMethod
+Class::instanceMethod

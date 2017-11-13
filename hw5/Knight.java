@@ -1,6 +1,7 @@
 /**
  * Represents a knight chess object
  * @author dds7
+ * @version 1
  */
 public class Knight extends Piece {
     /**
@@ -30,43 +31,45 @@ public class Knight extends Piece {
      * @return this an array of possible squares this piece could move to
      */
     @Override public Square[] movesFrom(Square square) {
-        int[] currentPosition = square.getBoardIndex();
-        int row = currentPosition[0];
-        int col = currentPosition[1];
-        int nullCount = 0;
-        int[][] possible = {
-            {row - 2, col + 1},
-            {row - 2, col - 1},
-            {row + 2, col + 1},
-            {row + 2, col - 1},
-            {row - 1, col + 2},
-            {row - 1, col - 2},
-            {row + 1, col + 2},
-            {row + 1, col + 2}
-        };
-        for (int i = 0; i < possible.length; i++) {
-            if (possible[i][0] < 0 || possible[i][0] > 7 || possible[i][1] < 0
-                || possible[i][1] > 7) {
-                possible[i] = null;
-                nullCount++;
-            }
+        Square[] sq = new Square[8];
+        int counter = 0;
+        char rank = square.getRank();
+        char file = square.getFile();
+        char[] ranks = new char[]{(char) (rank - 2), (char) (rank - 1),
+            (char) (rank + 1), (char) (rank + 2)};
+        char[] files = new char[]{(char) (file - 2), (char) (file - 1),
+            (char) (file + 1), (char) (file + 2)};
+
+        if (isInBoard(files[0], ranks[1])) {
+            sq[counter++] = new Square(files[0], ranks[1]);
         }
-        int[][] possibleAndValid = new int[possible.length - nullCount][2];
-        int j = 0;
-        for (int i = 0; i < possible.length; i++) {
-            if (possible[i] != null) {
-                possibleAndValid[j] = possible[i];
-                j++;
-            }
+        if (isInBoard(files[0], ranks[2])) {
+            sq[counter++] = new Square(files[0], ranks[2]);
         }
-        Square[] result = new Square[possibleAndValid.length];
-        for (int i = 0; i < possibleAndValid.length; i++) {
-            char file = (char) (possibleAndValid[i][1] + 97);
-            int tempRank = 8 - possibleAndValid[i][0];
-            tempRank = tempRank + 48;
-            char rank = (char) tempRank;
-            result[i] = new Square(file, rank);
+        if (isInBoard(files[1], ranks[0])) {
+            sq[counter++] = new Square(files[1], ranks[0]);
         }
-        return result;
+        if (isInBoard(files[1], ranks[3])) {
+            sq[counter++] = new Square(files[1], ranks[3]);
+        }
+        if (isInBoard(files[2], ranks[0])) {
+            sq[counter++] = new Square(files[2], ranks[0]);
+        }
+        if (isInBoard(files[2], ranks[3])) {
+            sq[counter++] = new Square(files[2], ranks[3]);
+        }
+        if (isInBoard(files[3], ranks[1])) {
+            sq[counter++] = new Square(files[3], ranks[1]);
+        }
+        if (isInBoard(files[3], ranks[2])) {
+            sq[counter++] = new Square(files[3], ranks[2]);
+        }
+
+        Square[] full = new Square[counter];
+        for (int i = 0; i < counter; i++) {
+            full[i] = sq[i];
+        }
+
+        return full;
     }
 }

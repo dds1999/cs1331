@@ -1,7 +1,7 @@
 import java.util.Optional;
 
 /**
- * This class outlines a single chass play by either player
+ * This class outlines a single chess play by either player
  * @author dds7
  * @version 1
  */

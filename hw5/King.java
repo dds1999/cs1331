@@ -1,6 +1,7 @@
 /**
  * Represents a king chess object
  * @author dds7
+ * @version 2
  */
 public class King extends Piece {
     /**
@@ -30,43 +31,28 @@ public class King extends Piece {
      * @return this an array of possible squares this piece could move to
      */
     @Override public Square[] movesFrom(Square square) {
-        int[] currentPosition = square.getBoardIndex();
-        int row = currentPosition[0];
-        int col = currentPosition[1];
-        int[][] possible = {
-            {row - 1, col + 1},
-            {row - 1, col},
-            {row - 1, col - 1},
-            {row + 1, col + 1},
-            {row + 1, col},
-            {row + 1, col - 1},
-            {row, col + 1},
-            {row, col - 1},
-        };
-        int nullCount = 0;
-        for (int i = 0; i < possible.length; i++) {
-            if (possible[i][0] < 0 || possible[i][0] > 7 || possible[i][1] < 0
-                || possible[i][1] > 7) {
-                possible[i] = null;
-                nullCount++;
+        Square[] sq = new Square[8];
+        int counter = 0;
+        char rank = square.getRank();
+        char file = square.getFile();
+        for (int r = -1; r <= 1; r++) {
+            for (int c = -1; c <= 1; c++) {
+                if (r == 0 && c == 0) {
+                    continue;
+                }
+                if (isInBoard((char) (file + c), (char) (rank + r))) {
+                    sq[counter] = new Square((char) (file + c),
+                        (char) (rank + r));
+                    counter++;
+                }
             }
         }
-        int[][] possibleAndValid = new int[possible.length - nullCount][2];
-        int j = 0;
-        for (int i = 0; i < possible.length; i++) {
-            if (possible[i] != null) {
-                possibleAndValid[j] = possible[i];
-                j++;
-            }
+
+        Square[] full = new Square[counter];
+        for (int i = 0; i < counter; i++) {
+            full[i] = sq[i];
         }
-        Square[] result = new Square[possibleAndValid.length];
-        for (int i = 0; i < possibleAndValid.length; i++) {
-            char file = (char) (possibleAndValid[i][1] + 97);
-            int tempRank = 8 - possibleAndValid[i][0];
-            tempRank = tempRank + 48;
-            char rank = (char) tempRank;
-            result[i] = new Square(file, rank);
-        }
-        return result;
+
+        return full;
     }
 }

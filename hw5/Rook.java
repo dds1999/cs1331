@@ -1,6 +1,7 @@
 /**
  * Represents a rook chess object
  * @author dds7
+ * @version 2
  */
 public class Rook extends Piece {
     /**

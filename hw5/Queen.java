@@ -1,6 +1,7 @@
 /**
  * Represents a queen chess object
  * @author dds7
+ * @version 2
  */
 public class Queen extends Piece {
     /**

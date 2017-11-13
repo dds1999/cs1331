@@ -1,10 +1,12 @@
 /**
  * Represents a chess square  object
  * @author dds7
+ * @version 2
  */
 public class Square {
     private char file;
     private char rank;
+    private String name;
     private int[] boardIndex;
     /**
      * Constructor for a chess square
@@ -19,14 +21,16 @@ public class Square {
      * @param name the name of a given sqaure including both rank and file
      */
     public Square(String name) throws InvalidSquareException {
-        int fileInt = (int) name.charAt(0);
-        int rankInt = (int) name.charAt(1);
-        if (fileInt < 97 || fileInt > 104 || rankInt < 49 || rankInt > 56
-            || name.length() != 2) {
+        this.name = name;
+        if (name != null && name.length() == 2) {
+            this.file = name.charAt(0);
+            this.rank = name.charAt(1);
+            if (file < 97 || file > 104 || rank < 49 || rank > 56) {
+                throw new InvalidSquareException(name);
+            }
+        } else {
             throw new InvalidSquareException(name);
         }
-        this.file = (char) fileInt;
-        this.rank = (char) rankInt;
         boardIndex = getBoardIndex();
     }
     /**
@@ -48,7 +52,7 @@ public class Square {
         return ("" + file + rank);
     }
     /**
-     * overriden equals method for sqaures
+     * Overriden equals method for sqaures
      * @param other the object to be compared to this sqaure
      * @return boolean value of whether this object equals the passed object
      */
@@ -64,6 +68,17 @@ public class Square {
         }
         Square that = (Square) other;
         return (this.rank == that.rank && this.file == that.file);
+    }
+    /**
+     * Overriden hashCode method for Sqaures
+     * @retun hashcode of this Square
+     */
+    @Override public int hashCode() {
+        int sum = 0;
+        sum += 17 * this.rank;
+        sum *= 31;
+        sum += 17 * this.file;
+        return sum;
     }
     /**
      * finds an integer array containting the row and coloumn values of where
